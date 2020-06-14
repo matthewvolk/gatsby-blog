@@ -1,16 +1,42 @@
 require(`dotenv`).config({
   path: `.env`,
-})
+});
 
 module.exports = {
   siteMetadata: {
-    siteTitleAlt: `Minimal Blog - Gatsby Theme`,
+    // Used for the title template on pages other than the index site
+    siteTitle: `Matthew Volk`,
+    // Default title of the page
+    siteTitleAlt: `Product Manager and Web Developer - Matthew Volk`,
+    // Can be used for e.g. JSONLD
+    siteHeadline: `Product Manager and Web Developer - Matthew Volk`,
+    // Will be used to generate absolute URLs for og:image etc.
+    siteUrl: `https://volk.dev`,
+    // Used for SEO
+    siteDescription: `Personal blog.`,
+    // Will be set on the <html /> tag
+    siteLanguage: `en`,
+    // Used for og:image and must be placed inside the `static` folder
+    // siteImage: `/banner.jpg`,
+    // Twitter Handle
+    author: `@mattjvolk`,
+    // Links displayed in the header on the right side
   },
   plugins: [
     {
       resolve: `@lekoarts/gatsby-theme-minimal-blog`,
-      // See the theme's README for all available options
       options: {
+        externalLinks: [
+          {
+            name: `GitHub`,
+            url: `https://github.com/matthewvolk`,
+          },
+          {
+            name: `LinkedIn`,
+            url: `https://www.linkedin.com/in/mjvolk`,
+          },
+        ],
+        // Navigation links
         navigation: [
           {
             title: `Blog`,
@@ -19,16 +45,6 @@ module.exports = {
           {
             title: `About`,
             slug: `/about`,
-          },
-        ],
-        externalLinks: [
-          {
-            name: `Twitter`,
-            url: `https://twitter.com/lekoarts_de`,
-          },
-          {
-            name: `Instagram`,
-            url: `https://www.instagram.com/lekoarts.de/`,
           },
         ],
       },
@@ -67,4 +83,4 @@ module.exports = {
     `gatsby-plugin-offline`,
     `gatsby-plugin-netlify`,
   ],
-}
+};
