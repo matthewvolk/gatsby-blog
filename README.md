@@ -8,6 +8,11 @@ I've hosted plenty of blogs and personal websites with a large array of framewor
 
 - [ ] Google Analytics
 - [ ] [Create Project Content Type](https://chipcullen.com/making-multiple-content-types-in-gatsby/)
+- [ ] Migrate blog post: https://mjvolk.com/user-auth/
+- [ ] Migrate blog post: https://mjvolk.com/bug-identified-in-magento-2-2-4-installation-phase/
+- [ ] Migrate blog post: https://mjvolk.com/automate-requirements-gathering-for-web-development-project-managers/
+- [ ] Migrate blog post: https://mjvolk.com/iot-node-js-mongodb-and-a-more-secure-residential-community/
+- [ ] Migrate blog post: https://mjvolk.com/amifree/
 
 ## 🤓 Tech Stack
 
