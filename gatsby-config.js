@@ -47,6 +47,7 @@ module.exports = {
             slug: `/about`,
           },
         ],
+        formatString: "MM.DD.YYYY",
       },
     },
     {
