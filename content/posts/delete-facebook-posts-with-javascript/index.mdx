@@ -1,0 +1,50 @@
+---
+title: Delete All Your Old Facebook Posts with a Few Lines of Javascript
+date: 2018-10-17
+tags:
+  - JavaScript
+---
+
+## Intro
+
+The other day I was scrolling through Facebook when I noticed a feature I hadn’t seen before — Activity Log. This feature gives you a zoomed-out look of your timeline that allows you to jump through to different years and see the posts, comments, and pictures from today back to the beginning.
+
+After a few minutes skimming through old posts from my days as a 14 year old internet spazz, I realized I had thousands of posts that needed to be deleted. To click and manually delete each post could have taken weeks, so instead I wrote a few lines of Javascript that would traverse the DOM for “delete” button nodes, click them, and instantly delete my entire post history in a matter of seconds.
+
+This post is still evolving, right now I’m going to admit the code is pretty manual. If it catches enough traction I’ll package it all up in a Chrome extension and make a link available here.
+
+## Navigate to Your Post History in Facebook
+
+Before writing any code, you'll need to navigate to the dashboard in Facebook where you're able to see your activity log. The Facebook UI has recently changed as of May 2020, but you should be able to navigate to your activity log by entering the following address in your browser's address bar:
+`https://www.facebook.com/{YOUR_FACEBOOK_USERNAME}/allactivity`
+
+Be sure to replace `{YOUR_FACEBOOK_USERNAME}` with your actual Facebook username, which can be found with [this guide](https://www.facebook.com/help/1740158369563165/?helpref=hc_fnav).
+
+## The Code
+
+At this time, you'll want to go ahead and open your browser’s developer tools > Javascript console tab. Facebook has a couple warning messages about entering malicious code given to you by strangers on the internet, but we’ll just ignore that for now ¯\\\_(ツ)\_/¯
+
+Once you open your console, scroll all the way to the bottom of the left hand sidebar with your activity feed — you can probably use the "Filter" button to filter for "Posts" and avoid all the other things.
+
+The first thing that we’ll want to do is gain access to the list of DOM nodes that house the edit button:
+
+```js
+var btns = document.querySelectorAll('[aria-label="Action options"]');
+```
+
+Now from this point on, it's very hard to write a single tutorial that will last the test of time. Facebook uses react and a whole bunch of other tooling behind the scenes of their web application, and it's very apparent if you start looking at the number of nested divs, each with about 10 - 15 CSS classes all named with cryptographic short strings.
+
+This makes it virtually impossible to create a single way to detect all the "Delete" nodes and click them individually, but essentially what you want to do is something like this:
+
+```js
+btns.forEach((btn) => {
+  btn.click();
+  // traverse dom for DOM elements with innerText == "Delete"
+  // traverse dom to and inspect each parent node until you find a node with an attribute '[role="menuitem"]'
+  // fire another .click() method on that parent node
+});
+```
+
+There you are! If done correctly, you will have deleted **every single post you've ever posted on Facebook**.
+
+\*_If there is enough interest, I will go ahead and add to this blog post to add the missing code in the code block above. If you are interested, please send me an email <a href="mailto:volkmattj@gmail.com?subject=Please finish the code example in your Delete Facebook Posts article!&body=Please finish the code example in your article: https://mjvolk.com/delete-facebook-posts-with-javascript/" target="_blank">here</a>._
