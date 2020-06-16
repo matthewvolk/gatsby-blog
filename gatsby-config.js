@@ -7,9 +7,9 @@ module.exports = {
     // Used for the title template on pages other than the index site
     siteTitle: `Matthew Volk`,
     // Default title of the page
-    siteTitleAlt: `Project Manager and Software Developer - Matthew Volk`,
+    siteTitleAlt: `Context over Content - A Blog by Matthew Volk`,
     // Can be used for e.g. JSONLD
-    siteHeadline: `Project Manager and Software Developer - Matthew Volk`,
+    siteHeadline: `Context over Content - A Blog by Matthew Volk`,
     // Will be used to generate absolute URLs for og:image etc.
     siteUrl: `https://volk.dev`,
     // Used for SEO
