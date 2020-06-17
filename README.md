@@ -6,6 +6,7 @@ I've hosted plenty of blogs and personal websites with a large array of framewor
 
 ## 🚀 To Do
 
+- [ ] 404 Page
 - [ ] Google Analytics
 - [ ] [Create Project Content Type](https://chipcullen.com/making-multiple-content-types-in-gatsby/)
 - [ ] Migrate blog post: https://mjvolk.com/user-auth/
