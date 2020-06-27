@@ -4,9 +4,10 @@ date: 2018-10-17
 tags:
   - JavaScript
 slug: /delete-facebook-posts-with-javascript
+banner: ./like.png
 ---
 
-_Last Updated: May 20th, 2020_
+_Last Updated: June 27th, 2020_
 
 ## Intro
 
@@ -42,15 +43,67 @@ Now from this point on, it's very hard to write a single tutorial that will last
 
 This makes it virtually impossible to create a single way to detect all the "Delete" nodes and click them individually, but essentially what you want to do is something like this:
 
+First, write a function in the Javascript console that loops through the DOM tree backwards starting with a node of your choice. The node we give this function will eventually be a `span` element with the text of that element being "Delete". The reason we need to do this is because with Facebook's DOM structure, the element that has the text "Delete" is not the same element that you click to actually delete... thanks, Facebook.
+
+```js
+var findDeleteButton = function (node, func) {
+  var node = node;
+  var attr = "role";
+  var val = "menuitem";
+  var notFound = true;
+
+  while (notFound) {
+    if (func(node, attr, val)) {
+      notFound = false;
+      return node;
+    } else {
+      node = node.parentElement;
+    }
+  }
+};
+```
+
+Then write a function that checks for a specified attribute/value pair on a DOM element. Have it return `true` if the attribute/value pair is found, and `false` if it is not.
+
+```js
+var checkAttrVal = function (node, attr, val) {
+  if (node.hasAttribute(attr)) {
+    if (node.getAttribute(attr) === val) {
+      return true;
+    } else {
+      return false;
+    }
+  } else {
+    return false;
+  }
+};
+```
+
+Then, we put it all together.
+
+1. First, we loop through the array of button elements to open the prompt containing the "Delete" button for the post
+2. For each button element, we trigger a `click()` method
+3. Once we have the prompt containing the "Delete" button open, we use an XPath selector to scan the DOM for a `span` element with its text set to "Delete"
+4. Then, as mentioned above, we need to find the parent element that you actually need to click to delete the post. Walk backwards from that `span` until you find an element with attribute == "menuitem"
+5. Trigger another `click()` method to click the delete button element
+6. Continue the loop
+
 ```js
 btns.forEach((btn) => {
   btn.click();
-  // traverse dom for DOM elements with innerText == "Delete"
-  // recursively traverse parent dom nodes until you find a parent node with an attribute '[role="menuitem"]'
-  // fire another .click() method on that parent node
+  var deleteTextNode = $x("//span[text()='Delete']"); // traverse dom for DOM elements with innerText == "Delete"
+  var deleteBtnNode = findDeleteButton(deleteTextNode, checkAttrVal); // traverse parent dom nodes until you find a parent node that you can fire an "click()" method on.
+  deleteBtnNode.click(); // fire the .click() method on that node
 });
 ```
 
 There you are! If done correctly, you will have deleted **every single post you've ever posted on Facebook**.
 
-\*_If there is enough interest, I will go ahead and add to this blog post to add the missing code in the code block above. If you are interested, please send me an email <a href="mailto:volkmattj@gmail.com?subject=Please finish the code example in your Delete Facebook Posts article!&body=Please finish the code example in your article: https://mjvolk.com/delete-facebook-posts-with-javascript/" target="_blank">here</a>._
+### Facebook's DOM Structure Changes Often
+
+This post was last updated June 27th, 2020, but Facebook's DOM structure changes often. Facebook's DOM is built from tens of thousands of React components, and millions of DOM attributes that can change any time. There are four "weak" points in this code:
+
+1. In our `btns` array, the `aria-label` for the "Action options" button could change at any time.
+2. In our `checkAttrVal` function, nobody can say that the clickable parent node will be found with that specific attribute/value pair. They could easily change, for example, `role="menuitem"` to `role="button"` which would require you to modify this code.
+3. The XPath selector we use to find the "Delete" text could change. Facebook could swap the `span` tag with another HTML element if they choose.
+4. The entire script is subject to fail if Facebook redesigns their Activity Log, they already did it once in 2020.
