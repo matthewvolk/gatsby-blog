@@ -6,6 +6,7 @@ tags:
   - Authentication
 slug: /implement-multiple-local-user-authentication-strategies-in-passport-js
 banner: ./passport.png
+description: Passport.js has a "hidden" feature that allows you to create multiple local user authentication strategies in one app — this article shows you how.
 ---
 
 _Last Updated: June 9th 2020_
@@ -16,17 +17,13 @@ User authentication is complicated.
 
 Writing user authentication from scratch is even more complicated. You’ll need to make complex security considerations that can delay progress on your Node.js application.
 
-The _good_ news is that the npm package [Passport.js](https://github.com/jaredhanson/passport) abstracts a good amount of this complication away from us, empowering us to create solutions for user authentication that are modular, maintainable, and extensible.
+The good news is that the npm package [Passport.js](https://github.com/jaredhanson/passport) abstracts a good amount of this complication away from us, empowering us to create solutions for user authentication that are modular, maintainable, and extensible — however the Passport [documentation](http://www.passportjs.org/docs/authenticate/) is less than helpful. It gives great explanation of the API, but skips over very useful module extensibility features.
 
-The _bad_ news is that the [documentation](http://www.passportjs.org/docs/authenticate/) is less than helpful. It gives great explanation of the API, but skips over very useful module extensibility features.
+This article serves to demonstrate one capability offered by Passport.js which is not explicitly outlined in the documentation: **Authenticate multiple _local_ user types with multiple _local_ strategies. Each strategy will be using different user models with different user roles, while at the same time utilizing Passport's native serialization methods to authenticate and authorize user sessions.**
 
-This article serves to demonstrate one capability offered by Passport.js which is not outlined in the documentation:
+## Creating Local Strategies for Two User Types
 
-**Authenticate multiple _local_ user types with multiple _local_ strategies. Each strategy will be using different user models with different user roles, while at the same time utilizing Passport's native serialization methods to authenticate and authorize user sessions.**
-
-## Part One: Name the Local Strategies
-
-Although it isn't required, Passport.js's `passport.use();` method does take one optional parameter that is not mentioned in the [documentation](http://www.passportjs.org/docs/configure/). The documentation should be changed so that it includes:
+Although it isn't required, Passport.js's `passport.use();` method does take one optional parameter that is not mentioned in the [documentation](http://www.passportjs.org/docs/configure/):
 
 ```js
   /**
@@ -36,25 +33,18 @@ Although it isn't required, Passport.js's `passport.use();` method does take on
 passport.use([ strategy-name,] new LocalStrategy);
 ```
 
-Essentially, Passport uses "strategies" to authenticate users making requests to the server. The `passport.use` method is similar to Express's `app.use` in that it mounts a specified strategy to the Passport object, which is called when the route handler callback invokes the `authenticate();` method (e.g., `app.get( "/path", passport.authenticate('strategyName') );`).
+The `passport.use` method is similar to Express's `app.use` in that it mounts a specified strategy to the Passport object, which is called when the route handler callback invokes the `authenticate();` method (e.g., `app.get( "/path", passport.authenticate('strategyName') );`).
 
-Knowing this, you can add many different *named* strategies to your app's Passport object to be used in other parts of your application, and Passport is programmed to validate requests using those strategies anytime you want via the `authenticate();` method.
+So, you can add many different *named* strategies to your app's Passport object to be used in other parts of your application, and Passport is programmed to validate requests using those strategies anytime you want via the `authenticate();` method.
 
 In a typical application that only needs one type of user authentication, you would see something like:
 
-**app.js**
-
-```js
-...
+```js:title=app.js
 const passport = require("passport");
-...
-
-require('./config/passport')(passport);
+require("./config/passport")(passport);
 ```
 
-**config/passport.js**
-
-```js
+```js:title=config/passport.js
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 
@@ -65,15 +55,10 @@ module.exports = function(passport) {
     // and save it to the database along with a hashed
     // version of the password
   });
-
-  ...
-
 }
 ```
 
-**routes.js**
-
-```js
+```js:title=routes.js
 const express = require("express");
 const passport = require("passport");
 
@@ -90,24 +75,17 @@ In the `app.js` file, we are importing the passport object, and then passing it 
 
 In order to change the code above so that you can use multiple local strategies, is to add a `passport.use` method with names of the strategies we want to include. I have included an example below:
 
-**app.js**
-
-```js
-...
+```js:title=app.js
 const passport = require("passport");
-...
-
-require('./config/passport')(passport);
+require("./config/passport")(passport);
 ```
 
-**config/passport.js**
-
-```js
+```js:title=config/passport.js {12-17}
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 
 module.exports = function(passport) {
-  passport.use('local-user-signup', new LocalStrategy({
+  passport.use('local-signup', new LocalStrategy({
     // Include logic that searches the application database
     // for an existing username, if no username exists, create
     // and save it to the database along with a hashed
@@ -115,45 +93,29 @@ module.exports = function(passport) {
   });
 
   passport.use('local-otherUser-signup', new LocalStrategy({
-    ...
+    // Include logic that searches the application database
+    // for an existing username, if no username exists, create
+    // and save it to the database along with a hashed
+    // version of the password
   });
-
-  passport.use('local-user-login', new LocalStrategy({
-    // Include logic that searches the app database for an
-    // an existing username, if it exists, match passwords
-    // and login. If either username does not exist, or
-    // password does not match existing username, throw error.
-  });
-
-  passport.use('local-otherUser-login', new LocalStrategy({
-    ...
-  });
-
-  ...
-
 }
 ```
 
-**routes.js**
-
-```js
+```js:title=routes.js {5}
 const express = require("express");
 const passport = require("passport");
 
-app.post('/signup', passport.authenticate('local-signup', { ... });
+app.post('/signup-1', passport.authenticate('local-signup', { ... });
+app.post('/signup-2', passport.authenticate('local-otherUser-signup', { ... });
 ```
 
-Issue #50 from the Passport.js repository on GitHub shows Jared Hanson explaining the same concept:
+If you'd like more detail and examples than what is provided above, [issue #50](https://github.com/jaredhanson/passport/issues/50) from the Passport.js repository on GitHub shows Jared Hanson explaining the same concept.
 
-[https://github.com/jaredhanson/passport/issues/50](https://github.com/jaredhanson/passport/issues/50)
+## Extending `passport.serializeUser();` and `passport.deserializeUser();`
 
-## Extending passport.serializeUser(); and passport.deserializeUser();
+Once you've completed the steps above, you won't yet be able to use the named local authentication strategies from the config/passport.js file that you created above, and your application is likely crashing silently.
 
-Many of you who are reading this article have already completed the steps above, and are now faced with an issue:
-
-You are unable to use the named local authentication strategies from the config/passport.js file that you created above, and your application is crashing silently.
-
-If this is the case, you may have not yet extended the Passport serialization methods, and you will not be able to successfully use the multiple local authentication strategies until you do so.
+The next step is to extend the Passport serialization methods with a function that both checks which Passport strategy was used to generate that client, and then generates a unique code to serialize that user with so that they can be deserialized with each request thereafter.
 
 Before moving on, take a look at the serialization methods in the [documentation](http://www.passportjs.org/docs/configure/). The user ID (you provide as the second argument of the "done" function in the `serializeUser` method) is saved in the session and is later used to retrieve the whole object via the deserializeUser function. serializeUser determines, which data of the user object should be stored in the session. The result of the `serializeUser` method is attached to the session as `req.session.passport.user = {}`. The first argument of `deserializeUser` corresponds to the key of the user object that was given to the done function (see 1.). So your whole object is retrieved with help of that key.
 
@@ -161,9 +123,7 @@ If you do not make your user ID unique across each user Model, your `serializeUs
 
 There are a few ways to fix this, but I included a session ID constructor below:
 
-**config/passport.js**
-
-```js
+```js:title=config/passport.js
 const LocalStrategy = require('passport-local').Strategy;
 const Guest = require('../models/guest');
 const Resident = require('../models/resident');
