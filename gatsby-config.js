@@ -13,7 +13,7 @@ module.exports = {
     // Will be used to generate absolute URLs for og:image etc.
     siteUrl: `https://volk-gatsby.netlify.app/`,
     // Used for SEO
-    siteDescription: `Personal blog.`,
+    siteDescription: `The personal blog of Matthew Volk — an Austin, Texas based project manager and independent software developer.`,
     // Will be set on the <html /> tag
     siteLanguage: `en`,
     // Used for og:image and must be placed inside the `static` folder
