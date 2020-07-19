@@ -1,6 +1,7 @@
 # Gatsby Blog - Personal Website
 
 ![](https://img.shields.io/badge/node-v12.16.2-brightgreen) ![](https://img.shields.io/badge/npm-v6.14.4-brightgreen)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/9162a224-69cb-4988-a44b-c1d38a798bd3/deploy-status)](https://app.netlify.com/sites/volk-gatsby/deploys)
 
 I've hosted plenty of blogs and personal websites with a large array of frameworks and CMS's such as Wordpress, Next.JS, GitHub Pages, etc. I figured that since I'd never worked with Gatsby before, and I was in need of a website redesign, that this blog was a step in the right direction.
 
