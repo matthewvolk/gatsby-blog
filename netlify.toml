@@ -1,0 +1,19 @@
+[[redirects]]
+  from = "/iot-node-js-mongodb-and-a-more-secure-residential-community"
+  to = "/blog"
+  status = 301
+
+[[redirects]]
+  from = "/automate-requirements-gathering-for-web-development-project-managers"
+  to = "/blog"
+  status = 301
+
+[[redirects]]
+  from = "/amifree"
+  to = "/blog"
+  status = 301
+
+[[redirects]]
+  from = "/the-future-of-google-chrome-and-the-end-of-the-independent-web"
+  to = "/blog"
+  status = 301
