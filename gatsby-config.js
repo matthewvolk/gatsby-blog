@@ -11,7 +11,7 @@ module.exports = {
     // Can be used for e.g. JSONLD
     siteHeadline: `Context over Content - A Blog by Matthew Volk`,
     // Will be used to generate absolute URLs for og:image etc.
-    siteUrl: `https://volk-gatsby.netlify.app/`,
+    siteUrl: `https://mjvolk.com/`,
     // Used for SEO
     siteDescription: `The personal blog of Matthew Volk — an Austin, Texas based project manager and independent software developer.`,
     // Will be set on the <html /> tag
