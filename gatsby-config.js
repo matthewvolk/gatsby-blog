@@ -38,10 +38,6 @@ module.exports = {
             name: `GitHub`,
             url: `https://github.com/matthewvolk`,
           },
-          {
-            name: `LinkedIn`,
-            url: `https://www.linkedin.com/in/mjvolk`,
-          },
         ],
         // Navigation links
         navigation: [
